@@ -8,4 +8,4 @@ This template should help get you started developing with Tauri, React and Types
 
 ## Run
 
-pnpm tauri dev
+`pnpm tauri dev`
