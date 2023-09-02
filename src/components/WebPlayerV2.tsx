@@ -1,9 +1,10 @@
 // import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import { useEffect, useState } from "react";
 import PlaybackToggleButton from "./PlaybackToggleButton";
+import { AccessToken } from "@spotify/web-api-ts-sdk";
 
 interface WebPlayerV2Props {
-  token: string;
+  token: AccessToken;
 }
 
 
@@ -20,7 +21,7 @@ const WebPlayerV2: React.FC<WebPlayerV2Props> = (props) => {
     window.onSpotifyWebPlaybackSDKReady = () => {
       const player = new (window as any).Spotify.Player({
         name: "Spotlight - Dev App",
-        getOAuthToken: (cb: (token: string) => void) => { cb(props.token); },
+        getOAuthToken: (cb: (token: string) => void) => { cb(props.token.access_token); },
       });
 
       setPlayer(player);
@@ -90,7 +91,6 @@ const WebPlayerV2: React.FC<WebPlayerV2Props> = (props) => {
     <div>
       <h1>Spotify Web Playback SDK Quick Start</h1>
       {isConnected && <PlaybackToggleButton player={player} />}
-      {/* Add any other JSX elements for your player UI */}
     </div>
   );
 };

@@ -1,14 +1,22 @@
 import { useEffect, useState } from "react";
 
 import "./App.css";
-// import Home from "./components/Home";
 import { Login } from "./components/Login";
-// import WebPlayback from "./components/WebPlayback";
 import WebPlayerV2 from "./components/WebPlayerV2";
-import Home from "./components/Home";
+import { AccessToken } from "@spotify/web-api-ts-sdk";
+import WebAPI from "./components/WebAPI";
+import WebAPIController from "./components/WebAPIController";
+// import WebPlayback from "./components/WebPlayback";
 
 function App() {
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState<AccessToken>(
+    {
+      access_token: "",
+      token_type: "",
+      expires_in: 0,
+      refresh_token: "",
+      expires: 0
+    });
 
 
   useEffect(() => {
@@ -16,12 +24,18 @@ function App() {
     async function getToken() {
       const response = await fetch("http://localhost:8080/auth/token?user_id=0");
       const json = await response.json();
-      // console.log("response: " + json);
       if (json.access_token === undefined) {
         console.log("undefined");
-        setToken("");
+        setToken({
+          access_token: "",
+          token_type: "Bearer",
+          expires_in: 0,
+          refresh_token: "",
+          expires: 0
+        });
       } else {
-        setToken(json.access_token);
+        console.log(json)
+        setToken(json);
       }
     }
 
@@ -32,9 +46,14 @@ function App() {
 
   return (
     <>
-      {(token === "") ? <Login /> : <WebPlayerV2 token={token} />}
-      {/* {(token === "") ? <Login /> : <WebPlayback token={token} />} */}
-      {/* {(token === "") ? <Login /> : <Home token={token} />} */}
+      {token.access_token === "" ? <Login /> :
+        <div>
+          <WebPlayerV2 token={token} />
+          <WebAPI token={token}>
+            <WebAPIController />
+          </WebAPI>
+        </div>
+      }
     </>
   );
 }
